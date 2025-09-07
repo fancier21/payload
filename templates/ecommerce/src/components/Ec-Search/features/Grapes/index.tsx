@@ -11,12 +11,12 @@ import { Grape } from '@/payload-types'
 interface Props {
   grapes: Grape[]
   selectedGrape?: Grape
-  handleGrapeChange: (data: Grape) => void
+  handleGrapeChange: (grapeSlug: string) => void
 }
 
 export function Grapes({ grapes, selectedGrape, handleGrapeChange }: Props) {
   const currentIndex = React.useMemo(() => {
-    return grapes.findIndex((item) => item.id === selectedGrape?.id) || 0
+    return grapes.findIndex((item) => item.slug === selectedGrape?.slug) || 0
   }, [grapes, selectedGrape])
 
   const [api, setApi] = React.useState<CarouselApi>()
@@ -33,7 +33,7 @@ export function Grapes({ grapes, selectedGrape, handleGrapeChange }: Props) {
     if (api) {
       api.scrollTo(index)
       setCurrent(index)
-      handleGrapeChange(item.id)
+      handleGrapeChange(item.slug)
     }
   }
 

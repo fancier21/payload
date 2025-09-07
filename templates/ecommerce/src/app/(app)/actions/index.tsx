@@ -1,6 +1,6 @@
 'use server'
 
-import type { Producer, Product, Grape } from '@/payload-types'
+import type { Product, Producer, Grape } from '@/payload-types'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 
@@ -21,7 +21,7 @@ export async function getAllGrapes(): Promise<Grape[]> {
       // },
     })
 
-    return grapes
+    return grapes as Grape[]
   } catch (error) {
     console.error('Error fetching all grapes:', error)
     return []
@@ -29,11 +29,29 @@ export async function getAllGrapes(): Promise<Grape[]> {
 }
 
 /**
- * Get unique producers by grape ID
+ * Get unique producers by grape slug
  */
-export async function getProducersByGrape(grapeId: string): Promise<Producer[]> {
+export async function getProducersByGrape(grapeSlug: string): Promise<Producer[]> {
   try {
     const payload = await getPayload({ config: configPromise })
+
+    // First, get the grape by slug to get its ID for the relationship query
+    const { docs: grapes } = await payload.find({
+      collection: 'grapes',
+      limit: 1,
+      where: {
+        slug: {
+          equals: grapeSlug,
+        },
+      },
+    })
+
+    if (grapes.length === 0) {
+      console.error('Grape not found with slug:', grapeSlug)
+      return []
+    }
+
+    const grapeId = grapes[0].id
 
     const { docs: products } = await payload.find({
       collection: 'products',
@@ -75,14 +93,41 @@ export async function getProducersByGrape(grapeId: string): Promise<Producer[]> 
 }
 
 /**
- * Get current product by grape ID and producer ID
+ * Get current product by grape slug and producer slug
  */
 export async function getCurrentProduct(
-  grapeId: string,
-  producerId: string,
+  grapeSlug: string,
+  producerSlug: string,
 ): Promise<Product | null> {
   try {
     const payload = await getPayload({ config: configPromise })
+
+    // First, get the grape and producer by their slugs to get their IDs
+    const [grapeResult, producerResult] = await Promise.all([
+      payload.find({
+        collection: 'grapes',
+        limit: 1,
+        where: { slug: { equals: grapeSlug } },
+      }),
+      payload.find({
+        collection: 'producers',
+        limit: 1,
+        where: { slug: { equals: producerSlug } },
+      }),
+    ])
+
+    if (grapeResult.docs.length === 0) {
+      console.error('Grape not found with slug:', grapeSlug)
+      return null
+    }
+
+    if (producerResult.docs.length === 0) {
+      console.error('Producer not found with slug:', producerSlug)
+      return null
+    }
+
+    const grapeId = grapeResult.docs[0].id
+    const producerId = producerResult.docs[0].id
 
     const { docs: products } = await payload.find({
       collection: 'products',
@@ -111,3 +156,6 @@ export async function getCurrentProduct(
     return null
   }
 }
+
+// Export types for use in other components
+export type { Grape, Producer }

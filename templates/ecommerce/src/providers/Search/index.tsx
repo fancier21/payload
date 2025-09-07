@@ -3,8 +3,8 @@
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react'
 
 interface SearchSelection {
-  grapeId: string
-  producerId: string | null
+  grapeSlug: string
+  producerSlug: string | null
 }
 
 interface SearchContextType {

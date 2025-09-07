@@ -16,8 +16,8 @@ export function GrapeCard({ grape, className }) {
 
   const handleOpenSearch = () => {
     openSearch({
-      grapeId: grape.id,
-      producerId: null,
+      grapeSlug: grape.slug,
+      producerSlug: null,
     })
   }
 

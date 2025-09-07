@@ -69,15 +69,15 @@ export function SearchModal() {
       try {
         // Use first grape as default
         console.log('Selected:', selection)
-        const producers = await getProducersByGrape(selection?.grapeId || grapes[0].id)
+        const producers = await getProducersByGrape(selection?.grapeSlug || grapes[0].slug)
         console.log('All producers:', producers)
         setProducers(producers)
 
         // Set default selection if none exists
         if (!selection && producers.length > 0) {
           const defaultSelection = {
-            grapeId: selection?.grapeId || grapes[0].id,
-            producerId: producers[0].id,
+            grapeSlug: selection?.grapeSlug || grapes[0].slug,
+            producerSlug: producers[0].slug,
           }
           setSelection(defaultSelection)
         }
@@ -89,17 +89,17 @@ export function SearchModal() {
     }
     console.log('Loading producers...')
     loadProducers()
-  }, [isOpen, grapes.length, selection?.grapeId])
+  }, [isOpen, grapes.length, selection?.grapeSlug])
 
   // Effect 3: Load product when selection changes
   useEffect(() => {
-    if (!selection || !selection.producerId) return
+    if (!selection || !selection.producerSlug) return
 
     const loadProduct = async () => {
       setIsProductLoading(true)
       setError(null)
       try {
-        const productData = await getCurrentProduct(selection.grapeId, selection?.producerId)
+        const productData = await getCurrentProduct(selection.grapeSlug, selection?.producerSlug)
         console.log('Current product:', productData)
         setProduct(productData)
       } catch (e) {
@@ -113,14 +113,15 @@ export function SearchModal() {
     loadProduct()
   }, [selection])
 
-  const handleGrapeChange = (grapeId: string) => {
-    if (selection) setSelection({ ...selection, grapeId })
+  const handleGrapeChange = (grapeSlug: string) => {
+    if (selection) setSelection({ ...selection, grapeSlug })
   }
-  const handleProducerChange = (producerId: string) => {
-    if (selection) setSelection({ ...selection, producerId })
+  const handleProducerChange = (producerSlug: string) => {
+    if (selection) setSelection({ ...selection, producerSlug })
   }
 
-  const selectedGrape = grapes.length > 0 && grapes.find((grape) => selection?.grapeId === grape.id)
+  const selectedGrape =
+    grapes.length > 0 && grapes.find((grape) => selection?.grapeSlug === grape.slug)
   const firstGrapeGalleryImage =
     typeof selectedGrape?.gallery?.[0] !== 'string' ? selectedGrape?.gallery?.[0] : undefined
 
@@ -155,7 +156,7 @@ export function SearchModal() {
             <div className="flex space-x-2 pb-2">
               <Grapes
                 grapes={grapes}
-                selectedGrape={grapes.find((grape) => selection?.grapeId === grape.id)}
+                selectedGrape={grapes.find((grape) => selection?.grapeSlug === grape.slug)}
                 handleGrapeChange={handleGrapeChange}
               />
             </div>
@@ -173,8 +174,8 @@ export function SearchModal() {
                   producers.map((producer) => (
                     <li key={producer.id}>
                       <button
-                        onClick={() => handleProducerChange(producer.id)}
-                        className={`w-full text-left p-3 rounded-md transition-colors flex items-center space-x-4 ${selection?.producerId === producer.id ? 'bg-blue-100 dark:bg-blue-900/50' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
+                        onClick={() => handleProducerChange(producer.slug)}
+                        className={`w-full text-left p-3 rounded-md transition-colors flex items-center space-x-4 ${selection?.producerSlug === producer.slug ? 'bg-blue-100 dark:bg-blue-900/50' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'}`}
                       >
                         <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-zinc-500 shrink-0">
                           {producer.title.charAt(0)}
@@ -211,12 +212,12 @@ export function SearchModal() {
                 <CompatibleWith product={product} />
               </div>
             ) : null}
-            {!isProductLoading && selection?.producerId && !product && (
+            {!isProductLoading && selection?.producerSlug && !product && (
               <p className="text-center text-zinc-500 pt-8">
                 No specific product found for this combination.
               </p>
             )}
-            {!selection?.producerId && !isProductLoading && (
+            {!selection?.producerSlug && !isProductLoading && (
               <p className="text-center text-zinc-500 pt-8">
                 Select a producer to see their product.
               </p>

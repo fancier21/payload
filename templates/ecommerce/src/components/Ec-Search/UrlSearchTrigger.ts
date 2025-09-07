@@ -19,8 +19,8 @@ export function UrlSearchTrigger() {
 
     if (producerSlug && productQuery) {
       openSearch({
-        grapeId: productQuery,
-        producerId: producerSlug,
+        grapeSlug: productQuery,
+        producerSlug: producerSlug,
       })
     }
   }, [producerSlug, productQuery, openSearch])
