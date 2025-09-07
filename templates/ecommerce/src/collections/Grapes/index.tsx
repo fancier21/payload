@@ -1,0 +1,111 @@
+import { CollectionConfig } from 'payload'
+import { CallToAction } from '@/blocks/CallToAction/config'
+import { Content } from '@/blocks/Content/config'
+import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { slugField } from '@/fields/slug'
+import { generatePreviewPath } from '@/utilities/generatePreviewPath'
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from '@payloadcms/plugin-seo/fields'
+import {
+  FixedToolbarFeature,
+  HeadingFeature,
+  HorizontalRuleFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
+} from '@payloadcms/richtext-lexical'
+import { isAdmin } from '@/access/isAdmin'
+import { isAdminOrPublished } from '@/access/isAdminOrPublished'
+import { mediaUrl } from '@/fields/mediaUrl'
+
+export const Grapes: CollectionConfig = {
+  slug: 'grapes',
+  access: {
+    create: isAdmin,
+    delete: isAdmin,
+    read: isAdminOrPublished,
+    update: isAdmin,
+  },
+  admin: {
+    defaultColumns: ['title', '_status'],
+    useAsTitle: 'title',
+  },
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    meta: true,
+  },
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    {
+      name: 'description',
+      type: 'richText',
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          return [
+            ...rootFeatures,
+            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+            HorizontalRuleFeature(),
+          ]
+        },
+      }),
+      label: false,
+      required: false,
+    },
+    {
+      type: 'tabs',
+      tabs: [
+        {
+          fields: [
+            mediaUrl({
+              name: 'gallery',
+              label: 'Photo Gallery',
+              hasMany: true,
+              description: 'Photo gallery with external image URLs',
+              required: true,
+            }),
+          ],
+          label: 'Media',
+        },
+        {
+          name: 'meta',
+          label: 'SEO',
+          fields: [
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+              hasGenerateFn: true,
+            }),
+            MetaImageField({
+              relationTo: 'media',
+            }),
+
+            MetaDescriptionField({}),
+            PreviewField({
+              // if the `generateUrl` function is configured
+              hasGenerateFn: true,
+
+              // field paths to match the target field for data
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
+          ],
+        },
+      ],
+    },
+    ...slugField('title', {
+      slugOverrides: {
+        required: true,
+      },
+    }),
+  ],
+}
