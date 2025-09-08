@@ -1,12 +1,12 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import React, { useEffect } from 'react'
-import Image from 'next/image'
 
 import type { Page } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import { RichText } from '@/components/RichText'
+import { Logo } from '@/graphics/logo'
 
 export const MainImpactHero: React.FC<Page['hero']> = ({ links, media, richText }) => {
   const { setHeaderTheme } = useHeaderTheme()
@@ -34,7 +34,7 @@ export const MainImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
         </div>
 
         <div className="hidden md:block">
-          <Image src="/assets/icons/logo.svg" alt="Logo" width={237} height={123} priority />
+          <Logo width={237} height={123} fill="#ffffff" />
         </div>
       </div>
     </div>

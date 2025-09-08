@@ -66,6 +66,7 @@ export const Artists: CollectionConfig = {
             {
               name: 'description',
               type: 'richText',
+              localized: true,
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => {
                   return [

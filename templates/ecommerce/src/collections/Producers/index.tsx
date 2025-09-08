@@ -63,7 +63,6 @@ export const Producers: CollectionConfig = {
             {
               name: 'title',
               type: 'text',
-              localized: true,
               required: true,
               admin: {
                 description: 'The producer name',
