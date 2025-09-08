@@ -2,6 +2,7 @@ export type MediaUrlItem = {
   url: string
   alt: string
   caption?: string
+  id?: string
 }
 
 export type MediaUrlProps = {

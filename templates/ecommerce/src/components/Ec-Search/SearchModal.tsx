@@ -76,7 +76,7 @@ export function SearchModal() {
         // Set default selection if none exists
         if (!selection && producers.length > 0) {
           const defaultSelection = {
-            grapeSlug: selection?.grapeSlug || grapes[0].slug,
+            grapeSlug: grapes[0].slug,
             producerSlug: producers[0].slug,
           }
           setSelection(defaultSelection)
@@ -99,7 +99,7 @@ export function SearchModal() {
       setIsProductLoading(true)
       setError(null)
       try {
-        const productData = await getCurrentProduct(selection.grapeSlug, selection?.producerSlug)
+        const productData = await getCurrentProduct(selection?.grapeSlug, selection?.producerSlug)
         console.log('Current product:', productData)
         setProduct(productData)
       } catch (e) {
@@ -120,10 +120,15 @@ export function SearchModal() {
     if (selection) setSelection({ ...selection, producerSlug })
   }
 
-  const selectedGrape =
-    grapes.length > 0 && grapes.find((grape) => selection?.grapeSlug === grape.slug)
-  const firstGrapeGalleryImage =
-    typeof selectedGrape?.gallery?.[0] !== 'string' ? selectedGrape?.gallery?.[0] : undefined
+  const selectedGrape = grapes.find((grape) => selection?.grapeSlug === grape.slug)
+
+  const firstGrapeGalleryImage = selectedGrape?.gallery?.[0]
+    ? {
+        url: selectedGrape.gallery[0].url,
+        alt: selectedGrape.gallery[0].alt,
+        caption: selectedGrape.gallery[0].caption || undefined,
+      }
+    : undefined
 
   return (
     <Drawer open={isOpen} onOpenChange={closeSearch}>

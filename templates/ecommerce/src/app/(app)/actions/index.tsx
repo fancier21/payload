@@ -97,7 +97,7 @@ export async function getProducersByGrape(grapeSlug: string): Promise<Producer[]
  */
 export async function getCurrentProduct(
   grapeSlug: string,
-  producerSlug: string,
+  producerSlug: string | null,
 ): Promise<Product | null> {
   try {
     const payload = await getPayload({ config: configPromise })

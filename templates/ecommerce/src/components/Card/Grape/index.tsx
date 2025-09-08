@@ -11,7 +11,7 @@ interface Props {
   className?: string
 }
 
-export function GrapeCard({ grape, className }) {
+export function GrapeCard({ grape, className }: Props) {
   const { openSearch } = useSearch()
 
   const handleOpenSearch = () => {
@@ -21,9 +21,13 @@ export function GrapeCard({ grape, className }) {
     })
   }
 
-  const firstGalleryImage = typeof grape.gallery?.[0] !== 'string' ? grape.gallery?.[0] : undefined
-  const metaImage = typeof grape.meta?.image !== 'string' ? grape.meta?.image : undefined
-  const image = metaImage || firstGalleryImage
+  const firstGrapeGalleryImage = grape?.gallery?.[0]
+    ? {
+        url: grape.gallery[0].url,
+        alt: grape.gallery[0].alt,
+        caption: grape.gallery[0].caption || undefined,
+      }
+    : undefined
 
   return (
     <Card
@@ -34,8 +38,12 @@ export function GrapeCard({ grape, className }) {
       id={`grape-${grape.id}`}
     >
       <div onClick={handleOpenSearch} className="relative w-full h-[200px] group">
-        {image ? (
-          <MediaUrl media={image} className="w-full h-full object-cover" imgClassName="h-full" />
+        {firstGrapeGalleryImage ? (
+          <MediaUrl
+            media={firstGrapeGalleryImage}
+            className="w-full h-full object-cover"
+            imgClassName="h-full"
+          />
         ) : null}
       </div>
       <CardHeader className="">
