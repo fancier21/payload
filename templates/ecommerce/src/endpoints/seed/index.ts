@@ -2,7 +2,15 @@ import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from '
 
 import { homePageData } from './home'
 
-const collections: CollectionSlug[] = ['pages']
+const collections: CollectionSlug[] = [
+  'media',
+  'pages',
+  'producers',
+  'products',
+  'artists',
+  'forms',
+  'form-submissions',
+]
 
 const globals: GlobalSlug[] = ['header', 'footer']
 

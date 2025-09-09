@@ -17,7 +17,6 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { SlugComponent as SlugComponent_92cc057d0a2abb4f6cf0307edf59f986 } from '@/fields/slug/SlugComponent'
 import { HorizontalRuleFeatureClient as HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { VariantOptionsSelector as VariantOptionsSelector_666fdeb57a9fedc1909addeac11f5737 } from '@payloadcms/plugin-ecommerce/ui'
 import { PriceCell as PriceCell_666fdeb57a9fedc1909addeac11f5737 } from '@payloadcms/plugin-ecommerce/ui'
 import { PriceInput as PriceInput_666fdeb57a9fedc1909addeac11f5737 } from '@payloadcms/plugin-ecommerce/ui'
 import { BeforeDashboard as BeforeDashboard_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
@@ -61,8 +60,6 @@ export const importMap = {
   '@/fields/slug/SlugComponent#SlugComponent': SlugComponent_92cc057d0a2abb4f6cf0307edf59f986,
   '@payloadcms/richtext-lexical/client#HorizontalRuleFeatureClient':
     HorizontalRuleFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
-  '@payloadcms/plugin-ecommerce/ui#VariantOptionsSelector':
-    VariantOptionsSelector_666fdeb57a9fedc1909addeac11f5737,
   '@payloadcms/plugin-ecommerce/ui#PriceCell': PriceCell_666fdeb57a9fedc1909addeac11f5737,
   '@payloadcms/plugin-ecommerce/ui#PriceInput': PriceInput_666fdeb57a9fedc1909addeac11f5737,
   '@/components/BeforeDashboard#BeforeDashboard': BeforeDashboard_1a7510af427896d367a49dbf838d2de6,

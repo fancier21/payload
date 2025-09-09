@@ -87,9 +87,9 @@ export const plugins: Plugin[] = [
       ],
     },
     products: {
-      variants: {
-        variantsCollection: VariantsCollection,
-      },
+      // variants: {
+      //   variantsCollection: VariantsCollection,
+      // },
       productsCollection: ProductsCollection,
     },
   }),

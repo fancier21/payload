@@ -18,7 +18,7 @@ export const Providers: React.FC<{
           <SearchProvider>
             <SonnerProvider />
             <EcommerceProvider
-              enableVariants={true}
+              enableVariants={false}
               api={{
                 cartsFetchQuery: {
                   depth: 2,
