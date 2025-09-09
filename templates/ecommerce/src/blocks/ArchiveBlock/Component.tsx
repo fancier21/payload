@@ -1,7 +1,7 @@
 import type { ArchiveBlock as ArchiveBlockProps, Grape } from '@/payload-types'
 
 import configPromise from '@payload-config'
-import { DefaultDocumentIDType, getPayload } from 'payload'
+import { DefaultDocumentIDType, getPayload, TypedLocale } from 'payload'
 import React from 'react'
 import { RichText } from '@/components/RichText'
 
@@ -10,9 +10,10 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
     id?: DefaultDocumentIDType
+    locale: TypedLocale
   }
 > = async (props) => {
-  const { id, introContent, limit: limitFromProps, populateBy } = props
+  const { id, introContent, limit: limitFromProps, populateBy, locale } = props
 
   const limit = limitFromProps || 3
 
@@ -25,6 +26,7 @@ export const ArchiveBlock: React.FC<
       collection: 'grapes',
       depth: 1,
       limit,
+      locale,
     })
 
     posts = grapes.docs

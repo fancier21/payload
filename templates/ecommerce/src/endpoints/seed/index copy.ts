@@ -41,14 +41,23 @@ export const seed = async ({
     ),
   )
 
-  for (const collection of collections) {
-    await payload.db.deleteMany({ collection, req, where: {} })
-    if (payload.collections[collection].config.versions) {
-      await payload.db.deleteVersions({ collection, req, where: {} })
-    }
-  }
+  // for (const collection of collections) {
+  //   await payload.db.deleteMany({ collection, req, where: {} })
+  //   if (payload.collections[collection].config.versions) {
+  //     await payload.db.deleteVersions({ collection, req, where: {} })
+  //   }
+  // }
 
   payload.logger.info(`— Seeding pages...`)
+
+  const [] = await Promise.all([
+    payload.create({
+      collection: 'pages',
+      depth: 0,
+      locale: 'en',
+      data: homePageData('en'),
+    }),
+  ])
 
   const homePage = await payload.create({
     collection: 'pages',
@@ -113,7 +122,6 @@ export const seed = async ({
     data: {
       navItems: [
         {
-          id: header.navItems![0].id,
           link: {
             type: 'custom',
             label: 'ლოკალური პროდუქცია',
@@ -121,7 +129,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![1].id,
           link: {
             type: 'custom',
             label: 'მწარმოებლები',
@@ -129,7 +136,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![2].id,
           link: {
             type: 'custom',
             label: 'მხატვრები',
@@ -137,7 +143,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![3].id,
           link: {
             type: 'custom',
             label: 'ანგარიში',
@@ -153,7 +158,6 @@ export const seed = async ({
     data: {
       navItems: [
         {
-          id: header.navItems![0].id,
           link: {
             type: 'custom',
             label: 'ローカル製品',
@@ -161,7 +165,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![1].id,
           link: {
             type: 'custom',
             label: '生産者',
@@ -169,7 +172,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![2].id,
           link: {
             type: 'custom',
             label: 'アーティスト',
@@ -177,7 +179,6 @@ export const seed = async ({
           },
         },
         {
-          id: header.navItems![3].id,
           link: {
             type: 'custom',
             label: 'アカウント',

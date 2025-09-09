@@ -14,6 +14,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/utilities/cn'
 
 import { Logo } from '@/graphics/logo'
+import { LocaleSwitcher } from '../LocalSwitcher'
 
 type Props = {
   header: Header
@@ -61,6 +62,7 @@ export function HeaderClient({ header }: Props) {
           </div>
 
           <div className="flex justify-end gap-4">
+            <LocaleSwitcher />
             <Suspense fallback={<OpenSearchButton />}>
               <Search />
             </Suspense>

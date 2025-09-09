@@ -6,10 +6,11 @@ import Link from 'next/link'
 import { Dot } from 'lucide-react'
 import React from 'react'
 import { Logo } from '@/graphics/logo'
+import { TypedLocale } from 'payload'
 
 const { COMPANY_NAME, SITE_NAME } = process.env
 
-export async function Footer() {
+export async function Footer({ locale }: { locale?: TypedLocale }) {
   const footer: Footer = await getCachedGlobal('footer', 1)()
   const menu = footer.navItems || []
   const currentYear = new Date().getFullYear()

@@ -103,6 +103,7 @@ export const Pages: CollectionConfig = {
                 FormBlock,
               ],
               required: true,
+              localized: true,
             },
           ],
           label: 'Content',

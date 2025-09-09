@@ -108,10 +108,7 @@ export function CartModal() {
                         <div className="absolute z-40 -mt-2 ml-[55px]">
                           <DeleteItemButton item={item} />
                         </div>
-                        <Link
-                          className="z-30 flex flex-row space-x-4"
-                          href={`/products/${(item.product as Product)?.slug}`}
-                        >
+                        <div className="z-30 flex flex-row space-x-4">
                           <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                             {image?.url && (
                               <Image
@@ -137,7 +134,7 @@ export function CartModal() {
                               </p>
                             ) : null}
                           </div>
-                        </Link>
+                        </div>
                         <div className="flex h-16 flex-col justify-between">
                           {typeof price === 'number' && (
                             <Price
