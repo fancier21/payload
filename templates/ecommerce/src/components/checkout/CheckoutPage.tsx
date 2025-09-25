@@ -1,6 +1,6 @@
 'use client'
 
-import { Media } from '@/components/Media'
+import { MediaUrl } from '@/components/MediaUrl'
 import { Message } from '@/components/Message'
 import { Price } from '@/components/Price'
 import { Button } from '@/components/ui/button'
@@ -122,7 +122,7 @@ export const CheckoutPage: React.FC = () => {
     return (
       <div className="prose dark:prose-invert py-12 w-full items-center">
         <p>Your cart is empty.</p>
-        <Link href="/search">Continue shopping?</Link>
+        <Link href="/products">Continue shopping?</Link>
       </div>
     )
   }
@@ -398,7 +398,7 @@ export const CheckoutPage: React.FC = () => {
                   <div className="flex items-stretch justify-stretch h-20 w-20 p-2 rounded-lg border">
                     <div className="relative w-full h-full">
                       {image && typeof image !== 'string' && (
-                        <Media className="" fill imgClassName="rounded-lg" resource={image} />
+                        <MediaUrl className="" imgClassName="rounded-lg" media={image} />
                       )}
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import configPromise from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, TypedLocale } from 'payload'
 import { draftMode } from 'next/headers'
 import { homeStaticData } from '@/endpoints/seed/home-static'
 import React from 'react'
@@ -39,15 +39,17 @@ export async function generateStaticParams() {
 type Args = {
   params: Promise<{
     slug?: string
+    locale: TypedLocale
   }>
 }
 
-export default async function Page({ params }: Args) {
-  const { slug = 'home' } = await params
+export default async function Page({ params: paramsPromise }: Args) {
+  const { slug = 'home', locale = 'en' } = await paramsPromise
   const url = '/' + slug
 
   let page = await queryPageBySlug({
     slug,
+    locale,
   })
 
   // Remove this code once your website is seeded
@@ -62,24 +64,25 @@ export default async function Page({ params }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pt-16 pb-24">
+    <article className="">
       <RenderHero {...hero} />
-      <RenderBlocks blocks={layout} />
+      <RenderBlocks blocks={layout} locale={locale} />
     </article>
   )
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await params
+  const { slug = 'home', locale = 'en' } = await params
 
   const page = await queryPageBySlug({
     slug,
+    locale,
   })
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = async ({ slug }: { slug: string }) => {
+const queryPageBySlug = async ({ slug, locale }: { slug: string; locale: TypedLocale }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
@@ -90,6 +93,7 @@ const queryPageBySlug = async ({ slug }: { slug: string }) => {
     limit: 1,
     overrideAccess: draft,
     pagination: false,
+    locale,
     where: {
       and: [
         {

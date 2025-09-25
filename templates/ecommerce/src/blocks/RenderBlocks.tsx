@@ -5,11 +5,13 @@ import { CarouselBlock } from '@/blocks/Carousel/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { MediaUrlBlock } from '@/blocks/MediaUrlBlock/Component'
 import { ThreeItemGridBlock } from '@/blocks/ThreeItemGrid/Component'
 import { toKebabCase } from '@/utilities/toKebabCase'
 import React, { Fragment } from 'react'
 
 import type { Page } from '../payload-types'
+import { TypedLocale } from 'payload'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -19,13 +21,15 @@ const blockComponents = {
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
+  mediaUrlBlock: MediaUrlBlock,
   threeItemGrid: ThreeItemGridBlock,
 }
 
 export const RenderBlocks: React.FC<{
   blocks: Page['layout'][0][]
+  locale?: TypedLocale
 }> = (props) => {
-  const { blocks } = props
+  const { blocks, locale } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -43,7 +47,7 @@ export const RenderBlocks: React.FC<{
                 <div className="my-16" key={index}>
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                   {/* @ts-ignore - weird type mismatch here */}
-                  <Block id={toKebabCase(blockName!)} {...block} />
+                  <Block id={toKebabCase(blockName!)} {...block} locale={locale} />
                 </div>
               )
             }

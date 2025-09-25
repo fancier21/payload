@@ -19,9 +19,14 @@ import { Categories } from '@/collections/Categories'
 import { Media } from '@/collections/Media'
 import { Pages } from '@/collections/Pages'
 import { Users } from '@/collections/Users'
+import { Producers } from '@/collections/Producers'
+import { Grapes } from '@/collections/Grapes'
+import { Compatible } from '@/collections/Compatible'
+import { Artists } from '@/collections/Artists'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { plugins } from './plugins'
+import localization from './i18n/localization'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,7 +43,7 @@ export default buildConfig({
     },
     user: Users.slug,
   },
-  collections: [Users, Pages, Categories, Media],
+  collections: [Users, Pages, Categories, Media, Producers, Grapes, Compatible, Artists],
   // database-adapter-config-start
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
@@ -86,6 +91,7 @@ export default buildConfig({
     ...plugins,
     // storage-adapter-placeholder
   ],
+  localization,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

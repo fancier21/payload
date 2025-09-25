@@ -1,18 +1,27 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, ButtonProps } from '@/components/ui/button'
 import type { Product, Variant } from '@/payload-types'
 
 import { useCart } from '@/plugin-ecommerce/react/provider'
 import clsx from 'clsx'
 import { useSearchParams } from 'next/navigation'
 import React, { useCallback, useMemo } from 'react'
+import { ShoppingCart } from 'lucide-react'
 import { toast } from 'sonner'
 type Props = {
   product: Product
+  withIcon?: boolean
+  withPrice?: boolean
+  btnVariant?: ButtonProps['variant']
 }
 
-export function AddToCart({ product }: Props) {
+export function AddToCart({
+  product,
+  withIcon = false,
+  withPrice = false,
+  btnVariant = 'default',
+}: Props) {
   const { addItem, cart } = useCart()
   const searchParams = useSearchParams()
 
@@ -96,7 +105,7 @@ export function AddToCart({ product }: Props) {
   return (
     <Button
       aria-label="Add to cart"
-      variant={'outline'}
+      variant={btnVariant}
       className={clsx({
         'hover:opacity-90': true,
       })}
@@ -104,7 +113,8 @@ export function AddToCart({ product }: Props) {
       onClick={addToCart}
       type="submit"
     >
-      Add To Cart
+      {withIcon && <ShoppingCart size={16} />}
+      Add To Cart {withPrice && `| ${product.priceInUSD}`}
     </Button>
   )
 }

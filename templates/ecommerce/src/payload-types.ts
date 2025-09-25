@@ -76,6 +76,10 @@ export interface Config {
     pages: Page;
     categories: Category;
     media: Media;
+    producers: Producer;
+    grapes: Grape;
+    compatible: Compatible;
+    artists: Artist;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -108,6 +112,10 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    producers: ProducersSelect<false> | ProducersSelect<true>;
+    grapes: GrapesSelect<false> | GrapesSelect<true>;
+    compatible: CompatibleSelect<false> | CompatibleSelect<true>;
+    artists: ArtistsSelect<false> | ArtistsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -133,7 +141,7 @@ export interface Config {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'ge' | 'ja';
   user: User & {
     collection: 'users';
   };
@@ -260,6 +268,14 @@ export interface Order {
 export interface Product {
   id: string;
   title: string;
+  /**
+   * Select the grape associated with this product
+   */
+  grape: string | Grape;
+  /**
+   * Select the producer associated with this product
+   */
+  producer: string | Producer;
   description?: {
     root: {
       type: string;
@@ -275,10 +291,14 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
-  gallery?:
+  /**
+   * Photo gallery with external image URLs
+   */
+  externalGallery?:
     | {
-        image: string | Media;
-        variantOption?: (string | null) | VariantOption;
+        url: string;
+        alt: string;
+        caption?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -294,6 +314,17 @@ export interface Product {
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
   relatedProducts?: (string | Product)[] | null;
+  taste: {
+    body: number;
+    sweetness: number;
+    finish: number;
+    acidity: number;
+    tannin: number;
+  };
+  /**
+   * Upload icons that represent products that go well with this product
+   */
+  compatibility?: (string | Compatible)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -309,6 +340,50 @@ export interface Product {
   createdAt: string;
   deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grapes".
+ */
+export interface Grape {
+  id: string;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Photo gallery with external image URLs
+   */
+  gallery: {
+    url: string;
+    alt: string;
+    caption?: string | null;
+    id?: string | null;
+  }[];
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug: string;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -346,37 +421,129 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantOptions".
+ * via the `definition` "producers".
  */
-export interface VariantOption {
+export interface Producer {
   id: string;
-  _variantOptions_options_order?: string | null;
-  variantType: string | VariantType;
-  label: string;
   /**
-   * should be defaulted or dynamic based on label
+   * The producer name
    */
-  value: string;
-  updatedAt: string;
-  createdAt: string;
-  deletedAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "variantTypes".
- */
-export interface VariantType {
-  id: string;
-  label: string;
-  name: string;
-  options?: {
-    docs?: (string | VariantOption)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
+  title: string;
+  /**
+   * Producer tag or category
+   */
+  tag: string;
+  /**
+   * Must start with http:// or https://
+   */
+  website: string;
+  region: string;
+  country: string;
+  /**
+   * The main producer image
+   */
+  avatar: {
+    url: string;
+    alt: string;
+    caption?: string | null;
   };
+  /**
+   * Brief description of the producer
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The producer's full story
+   */
+  story?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Photo gallery with external image URLs
+   */
+  gallery?:
+    | {
+        url: string;
+        alt: string;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Stickers collection images (maximum 3)
+   */
+  stickerCollection?:
+    | {
+        url: string;
+        alt: string;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Wine collection images
+   */
+  wineCollection?:
+    | {
+        url: string;
+        alt: string;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Check if product is in stock
+   */
+  inStock?: boolean | null;
+  /**
+   * Check if product is guaranteed
+   */
+  guaranteed?: boolean | null;
+  /**
+   * Check if free delivery is available
+   */
+  freeDelivery?: boolean | null;
+  /**
+   * Build the page using content blocks
+   */
+  layout?: (CallToActionBlock | ContentBlock | MediaBlock | MediaUrlBlock | ArchiveBlock)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug: string;
+  slugLock?: boolean | null;
   updatedAt: string;
   createdAt: string;
-  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -430,7 +597,7 @@ export interface Page {
   title: string;
   publishedOn?: string | null;
   hero: {
-    type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
+    type: 'none' | 'mainImpact' | 'highImpact' | 'mediumImpact' | 'lowImpact';
     richText?: {
       root: {
         type: string;
@@ -471,6 +638,7 @@ export interface Page {
     | CallToActionBlock
     | ContentBlock
     | MediaBlock
+    | MediaUrlBlock
     | ArchiveBlock
     | CarouselBlock
     | ThreeItemGridBlock
@@ -548,6 +716,38 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaUrlBlock".
+ */
+export interface MediaUrlBlock {
+  /**
+   * Enter the full URL of the image (e.g., https://example.com/image.jpg)
+   */
+  url: string;
+  /**
+   * Describe the image for accessibility and SEO
+   */
+  alt: string;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaUrlBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ArchiveBlock".
  */
 export interface ArchiveBlock {
@@ -567,30 +767,11 @@ export interface ArchiveBlock {
     [k: string]: unknown;
   } | null;
   populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'products' | null;
-  categories?: (string | Category)[] | null;
+  relationTo?: 'grapes' | null;
   limit?: number | null;
-  selectedDocs?:
-    | {
-        relationTo: 'products';
-        value: string | Product;
-      }[]
-    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'archive';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: string;
-  title: string;
-  slug: string;
-  slugLock?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -623,6 +804,18 @@ export interface CarouselBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'carousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  title: string;
+  slug: string;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -861,6 +1054,40 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantTypes".
+ */
+export interface VariantType {
+  id: string;
+  label: string;
+  name: string;
+  options?: {
+    docs?: (string | VariantOption)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "variantOptions".
+ */
+export interface VariantOption {
+  id: string;
+  _variantOptions_options_order?: string | null;
+  variantType: string | VariantType;
+  label: string;
+  /**
+   * should be defaulted or dynamic based on label
+   */
+  value: string;
+  updatedAt: string;
+  createdAt: string;
+  deletedAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "variants".
  */
 export interface Variant {
@@ -878,6 +1105,34 @@ export interface Variant {
   createdAt: string;
   deletedAt?: string | null;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "compatible".
+ */
+export interface Compatible {
+  id: string;
+  title: string;
+  /**
+   * Photo with external image URL
+   */
+  icon: {
+    url: string;
+    alt: string;
+    caption?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug: string;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1006,6 +1261,54 @@ export interface Address {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artists".
+ */
+export interface Artist {
+  id: string;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The main artist image
+   */
+  avatar: {
+    url: string;
+    alt: string;
+    caption?: string | null;
+  };
+  layout?: (CallToActionBlock | ContentBlock | MediaBlock)[] | null;
+  country: string;
+  website?: string | null;
+  instagram?: string | null;
+  youtube?: string | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+    description?: string | null;
+  };
+  slug: string;
+  slugLock?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
@@ -1043,6 +1346,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'producers';
+        value: string | Producer;
+      } | null)
+    | ({
+        relationTo: 'grapes';
+        value: string | Grape;
+      } | null)
+    | ({
+        relationTo: 'compatible';
+        value: string | Compatible;
+      } | null)
+    | ({
+        relationTo: 'artists';
+        value: string | Artist;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1188,6 +1507,7 @@ export interface PagesSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
+        mediaUrlBlock?: T | MediaUrlBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         carousel?: T | CarouselBlockSelect<T>;
         threeItemGrid?: T | ThreeItemGridBlockSelect<T>;
@@ -1268,15 +1588,24 @@ export interface MediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaUrlBlock_select".
+ */
+export interface MediaUrlBlockSelect<T extends boolean = true> {
+  url?: T;
+  alt?: T;
+  caption?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ArchiveBlock_select".
  */
 export interface ArchiveBlockSelect<T extends boolean = true> {
   introContent?: T;
   populateBy?: T;
   relationTo?: T;
-  categories?: T;
   limit?: T;
-  selectedDocs?: T;
   id?: T;
   blockName?: T;
 }
@@ -1354,6 +1683,162 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "producers_select".
+ */
+export interface ProducersSelect<T extends boolean = true> {
+  title?: T;
+  tag?: T;
+  website?: T;
+  region?: T;
+  country?: T;
+  avatar?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+      };
+  description?: T;
+  story?: T;
+  gallery?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  stickerCollection?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  wineCollection?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  inStock?: T;
+  guaranteed?: T;
+  freeDelivery?: T;
+  layout?:
+    | T
+    | {
+        cta?: T | CallToActionBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+        mediaUrlBlock?: T | MediaUrlBlockSelect<T>;
+        archive?: T | ArchiveBlockSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "grapes_select".
+ */
+export interface GrapesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  gallery?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "compatible_select".
+ */
+export interface CompatibleSelect<T extends boolean = true> {
+  title?: T;
+  icon?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "artists_select".
+ */
+export interface ArtistsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  avatar?:
+    | T
+    | {
+        url?: T;
+        alt?: T;
+        caption?: T;
+      };
+  layout?:
+    | T
+    | {
+        cta?: T | CallToActionBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        mediaBlock?: T | MediaBlockSelect<T>;
+      };
+  country?: T;
+  website?: T;
+  instagram?: T;
+  youtube?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  slug?: T;
+  slugLock?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1571,12 +2056,15 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
+  grape?: T;
+  producer?: T;
   description?: T;
-  gallery?:
+  externalGallery?:
     | T
     | {
-        image?: T;
-        variantOption?: T;
+        url?: T;
+        alt?: T;
+        caption?: T;
         id?: T;
       };
   layout?:
@@ -1593,6 +2081,16 @@ export interface ProductsSelect<T extends boolean = true> {
   priceInUSDEnabled?: T;
   priceInUSD?: T;
   relatedProducts?: T;
+  taste?:
+    | T
+    | {
+        body?: T;
+        sweetness?: T;
+        finish?: T;
+        acidity?: T;
+        tannin?: T;
+      };
+  compatibility?: T;
   meta?:
     | T
     | {

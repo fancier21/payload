@@ -10,6 +10,7 @@ import { CallToAction } from '@/blocks/CallToAction/config'
 import { Content } from '@/blocks/Content/config'
 import { FormBlock } from '@/blocks/Form/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
+import { MediaUrlBlock } from '@/blocks/MediaUrlBlock/config'
 import { hero } from '@/fields/hero'
 import { slugField } from '@/fields/slug'
 import { adminOrPublishedStatus } from '@/access/adminOrPublishedStatus'
@@ -94,6 +95,7 @@ export const Pages: CollectionConfig = {
                 CallToAction,
                 Content,
                 MediaBlock,
+                MediaUrlBlock,
                 Archive,
                 Carousel,
                 ThreeItemGrid,
@@ -101,6 +103,7 @@ export const Pages: CollectionConfig = {
                 FormBlock,
               ],
               required: true,
+              localized: true,
             },
           ],
           label: 'Content',

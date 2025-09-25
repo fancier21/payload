@@ -6,6 +6,7 @@ import React from 'react'
 import { HeaderThemeProvider } from './HeaderTheme'
 import { ThemeProvider } from './Theme'
 import { SonnerProvider } from '@/providers/Sonner'
+import { SearchProvider } from './Search'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -14,32 +15,34 @@ export const Providers: React.FC<{
     <ThemeProvider>
       <AuthProvider>
         <HeaderThemeProvider>
-          <SonnerProvider />
-          <EcommerceProvider
-            enableVariants={true}
-            api={{
-              cartsFetchQuery: {
-                depth: 2,
-                populate: {
-                  products: {
-                    slug: true,
-                    title: true,
-                    gallery: true,
-                  },
-                  variants: {
-                    title: true,
+          <SearchProvider>
+            <SonnerProvider />
+            <EcommerceProvider
+              enableVariants={true}
+              api={{
+                cartsFetchQuery: {
+                  depth: 2,
+                  populate: {
+                    products: {
+                      slug: true,
+                      title: true,
+                      // gallery: true,
+                    },
+                    variants: {
+                      title: true,
+                    },
                   },
                 },
-              },
-            }}
-            paymentMethods={[
-              stripeAdapterClient({
-                publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
-              }),
-            ]}
-          >
-            {children}
-          </EcommerceProvider>
+              }}
+              paymentMethods={[
+                stripeAdapterClient({
+                  publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+                }),
+              ]}
+            >
+              {children}
+            </EcommerceProvider>
+          </SearchProvider>
         </HeaderThemeProvider>
       </AuthProvider>
     </ThemeProvider>

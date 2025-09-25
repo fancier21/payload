@@ -2,6 +2,7 @@ import { CallToAction } from '@/blocks/CallToAction/config'
 import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
+import { mediaUrl } from '@/fields/mediaUrl'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
 import { CollectionOverride } from '@/plugin-ecommerce/types'
 import {
@@ -18,13 +19,13 @@ import {
   InlineToolbarFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
-import { DefaultDocumentIDType, Where } from 'payload'
+// import { DefaultDocumentIDType, Where } from 'payload'
 
 export const ProductsCollection: CollectionOverride = ({ defaultCollection }) => ({
   ...defaultCollection,
   admin: {
     ...defaultCollection?.admin,
-    defaultColumns: ['title', 'enableVariants', '_status', 'variants.variants'],
+    defaultColumns: ['title', '_status'],
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -47,17 +48,53 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
   defaultPopulate: {
     ...defaultCollection?.defaultPopulate,
     title: true,
+    producer: true,
     slug: true,
-    variantOptions: true,
-    variants: true,
-    enableVariants: true,
+    grape: true,
+    // variantOptions: true,
+    // variants: true,
+    // enableVariants: true,
     gallery: true,
+    taste: true,
+    compatibility: true,
     priceInUSD: true,
     inventory: true,
     meta: true,
   },
   fields: [
     { name: 'title', type: 'text', required: true },
+    {
+      name: 'grape',
+      type: 'relationship',
+      filterOptions: ({ id }) => {
+        return {
+          id: {
+            not_in: [id],
+          },
+        }
+      },
+      relationTo: 'grapes',
+      required: true,
+      admin: {
+        description: 'Select the grape associated with this product',
+      },
+    },
+    {
+      name: 'producer',
+      type: 'relationship',
+      filterOptions: ({ id }) => {
+        return {
+          id: {
+            not_in: [id],
+          },
+        }
+      },
+      relationTo: 'producers',
+      required: true,
+      admin: {
+        description: 'Select the producer associated with this product',
+      },
+    },
     {
       type: 'tabs',
       tabs: [
@@ -80,61 +117,66 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
               label: false,
               required: false,
             },
-            {
-              name: 'gallery',
-              type: 'array',
-              minRows: 1,
-              fields: [
-                {
-                  name: 'image',
-                  type: 'upload',
-                  relationTo: 'media',
-                  required: true,
-                },
-                {
-                  name: 'variantOption',
-                  type: 'relationship',
-                  relationTo: 'variantOptions',
-                  admin: {
-                    condition: (data) => {
-                      return data?.enableVariants === true && data?.variantTypes?.length > 0
-                    },
-                  },
-                  filterOptions: ({ data }) => {
-                    if (data?.enableVariants && data?.variantTypes?.length) {
-                      const variantTypeIDs = data.variantTypes.map((item: any) => {
-                        if (typeof item === 'object' && item?.id) {
-                          return item.id
-                        }
-                        return item
-                      }) as DefaultDocumentIDType[]
+            // {
+            //   name: 'gallery',
+            //   type: 'array',
+            //   minRows: 1,
+            //   fields: [
+            //     {
+            //       name: 'image',
+            //       type: 'upload',
+            //       relationTo: 'media',
+            //       required: true,
+            //     },
+            //     {
+            //       name: 'variantOption',
+            //       type: 'relationship',
+            //       relationTo: 'variantOptions',
+            //       admin: {
+            //         condition: (data) => {
+            //           return data?.enableVariants === true && data?.variantTypes?.length > 0
+            //         },
+            //       },
+            //       filterOptions: ({ data }) => {
+            //         if (data?.enableVariants && data?.variantTypes?.length) {
+            //           const variantTypeIDs = data.variantTypes.map((item: any) => {
+            //             if (typeof item === 'object' && item?.id) {
+            //               return item.id
+            //             }
+            //             return item
+            //           }) as DefaultDocumentIDType[]
 
-                      if (variantTypeIDs.length === 0)
-                        return {
-                          variantType: {
-                            in: [],
-                          },
-                        }
+            //           if (variantTypeIDs.length === 0)
+            //             return {
+            //               variantType: {
+            //                 in: [],
+            //               },
+            //             }
 
-                      const query: Where = {
-                        variantType: {
-                          in: variantTypeIDs,
-                        },
-                      }
+            //           const query: Where = {
+            //             variantType: {
+            //               in: variantTypeIDs,
+            //             },
+            //           }
 
-                      return query
-                    }
+            //           return query
+            //         }
 
-                    return {
-                      variantType: {
-                        in: [],
-                      },
-                    }
-                  },
-                },
-              ],
-            },
-
+            //         return {
+            //           variantType: {
+            //             in: [],
+            //           },
+            //         }
+            //       },
+            //     },
+            //   ],
+            // },
+            mediaUrl({
+              name: 'externalGallery',
+              label: 'External Photo Gallery',
+              hasMany: true,
+              description: 'Photo gallery with external image URLs',
+            }),
             {
               name: 'layout',
               type: 'blocks',
@@ -170,6 +212,80 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
             },
           ],
           label: 'Product Details',
+        },
+        {
+          fields: [
+            {
+              name: 'taste',
+              type: 'group',
+              label: 'Taste',
+              fields: [
+                {
+                  label: 'Body - Light/Bold',
+                  name: 'body',
+                  type: 'number',
+                  defaultValue: 0.5,
+                  min: 0,
+                  max: 1,
+                  required: true,
+                },
+                {
+                  label: 'Sweetness - Dry/Sweet',
+                  name: 'sweetness',
+                  type: 'number',
+                  defaultValue: 0.5,
+                  min: 0,
+                  max: 1,
+                  required: true,
+                },
+                {
+                  label: 'Finish - Short/Long',
+                  name: 'finish',
+                  type: 'number',
+                  defaultValue: 0.5,
+                  min: 0,
+                  max: 1,
+                  required: true,
+                },
+                {
+                  label: 'Acidity - Low/High',
+                  name: 'acidity',
+                  type: 'number',
+                  defaultValue: 0.5,
+                  min: 0,
+                  max: 1,
+                  required: true,
+                },
+                {
+                  label: 'Tannin - Low/High',
+                  name: 'tannin',
+                  type: 'number',
+                  defaultValue: 0.5,
+                  min: 0,
+                  max: 1,
+                  required: true,
+                },
+              ],
+            },
+            {
+              label: 'Compatibility:',
+              name: 'compatibility',
+              type: 'relationship',
+              filterOptions: ({ id }) => {
+                return {
+                  id: {
+                    not_in: [id],
+                  },
+                }
+              },
+              relationTo: 'compatible',
+              hasMany: true,
+              admin: {
+                description: 'Upload icons that represent products that go well with this product',
+              },
+            },
+          ],
+          label: 'Preferences',
         },
         {
           name: 'meta',
