@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { useCart } from '@/plugin-ecommerce/react/provider'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'

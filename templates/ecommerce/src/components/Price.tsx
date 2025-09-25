@@ -1,5 +1,5 @@
 'use client'
-import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
+import { useCurrency } from '@/plugin-ecommerce/react/provider'
 import React, { useMemo } from 'react'
 
 type BaseProps = {

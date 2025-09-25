@@ -1,7 +1,7 @@
 'use client'
 
 import { CartItem } from '@/components/Cart'
-import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { useCart } from '@/plugin-ecommerce/react/provider'
 import clsx from 'clsx'
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import React from 'react'

@@ -3,7 +3,7 @@ import { Content } from '@/blocks/Content/config'
 import { MediaBlock } from '@/blocks/MediaBlock/config'
 import { slugField } from '@/fields/slug'
 import { generatePreviewPath } from '@/utilities/generatePreviewPath'
-import { CollectionOverride } from '@payloadcms/plugin-ecommerce/types'
+import { CollectionOverride } from '@/plugin-ecommerce/types'
 import {
   MetaDescriptionField,
   MetaImageField,

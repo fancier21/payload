@@ -3,9 +3,9 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { Plugin } from 'payload'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
+import { ecommercePlugin } from '@/plugin-ecommerce'
 
-import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
+import { stripeAdapter } from '@/plugin-ecommerce/payments/adapters/stripe'
 
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useAddresses } from '@payloadcms/plugin-ecommerce/client/react'
+import { useAddresses } from '@/plugin-ecommerce/react/provider'
 import { AddressItem } from '@/components/addresses/AddressItem'
 
 export const AddressListing: React.FC = () => {
